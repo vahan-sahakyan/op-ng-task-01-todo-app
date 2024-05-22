@@ -1,107 +1,12 @@
 <div
   class="min-h-screen flex flex-col items-center bg-zinc-100 dark:bg-zinc-800 p-4"
 >
-  <!-- Container -->
-  <div
-    class="w-full max-w-md bg-white dark:bg-zinc-700 rounded-lg shadow-md p-6"
-  >
-    <!-- Current Date Section -->
-    <div class="flex justify-end">
-      <div
-        class="p-2 bg-white dark:bg-zinc-800 rounded-lg shadow-md text-zinc-800 dark:text-zinc-200"
-      >
-        <i class="fas fa-calendar"></i>
-        {{ currentDate }}
-      </div>
-    </div>
-
-    <!-- Header Section -->
-    <div class="flex justify-between items-center mb-4 mt-10">
-      <h1 class="text-2xl font-bold text-center flex-grow dark:text-white">
-        TODO LIST
-      </h1>
-      <div class="flex items-center ml-4 cursor-pointer">
-        <input
-          type="checkbox"
-          id="select-all"
-          (change)="selectAll($event)"
-          class="mr-2 cursor-pointer"
-        />
-        <label for="select-all" class="cursor-pointer dark:text-white">
-          Select All
-        </label>
-      </div>
-    </div>
-
-    <!-- Input Section -->
-    <form (ngSubmit)="addTodo()" class="mb-4">
-      <div class="flex">
-        <input
-          type="text"
-          [(ngModel)]="newTodoTitle"
-          name="todo"
-          class="flex-grow p-1 px-4 border rounded-l-md focus:outline-none"
-          placeholder="Add a new task"
-        />
-        <button
-          type="submit"
-          class="bg-blue-500 text-white p-2 px-6 rounded-r-md active:bg-blue-600"
-        >
-          Add
-        </button>
-      </div>
-    </form>
-
-    <!-- To-Do List -->
-    <ul>
-      <li
-        *ngFor="let todo of todos; let i = index"
-        class="flex items-center justify-between bg-zinc-100 dark:bg-zinc-600 p-2 rounded-md mb-2"
-      >
-        <div class="flex items-center px-2">
-          <input
-            type="checkbox"
-            [checked]="todo.completed"
-            (change)="toggleCompleted(todo)"
-            class="mr-2 cursor-pointer"
-          />
-          <span
-            [ngClass]="{ 'line-through': todo.completed }"
-            class="dark:text-zinc-200"
-            >{{ todo.title }}</span
-          >
-        </div>
-        <div class="flex items-center px-2">
-          <button
-            (click)="editTodo(todo)"
-            class="text-blue-500 active:text-blue-700 mr-2"
-          >
-            <i class="fas fa-edit"></i>
-            Edit
-          </button>
-          <button
-            (click)="deleteTodo(todo)"
-            class="text-red-500 active:text-red-700"
-          >
-            <i class="fas fa-trash"></i>
-            Delete
-          </button>
-        </div>
-      </li>
-    </ul>
-
-    <!-- Uncompleted Tasks Count -->
-    <div class="text-right text-zinc-600 dark:text-zinc-200 mt-4">
-      {{ uncompletedTasks.length }} uncompleted tasks
-    </div>
-
-    <!-- Clear Completed Button -->
-    <button
-      *ngIf="uncompletedTasks.length !== todos.length"
-      (click)="clearCompleted()"
-      class="bg-red-600 dark:bg-red-500 text-white mt-4 w-full py-2 rounded-md active:bg-red-700 dark:active:bg-red-600"
-    >
-      Clear Completed
-    </button>
-  </div>
+  <app-todos-container>
+    <app-current-date></app-current-date>
+    <app-header></app-header>
+    <app-add-todo></app-add-todo>
+    <app-todo-list></app-todo-list>
+    <app-footer-info></app-footer-info>
+    <app-clear-completed></app-clear-completed>
+  </app-todos-container>
 </div>
