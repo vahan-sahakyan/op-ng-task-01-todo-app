@@ -1,0 +1,29 @@
+{
+  "todos": [
+    {
+      "id": "702e040c-ebe7-4ef9-9320-f51d6e58b44e",
+      "title": "Todo 1",
+      "completed": false
+    },
+    {
+      "id": "2514da79-8eb0-4124-bfcf-26c3e62bd9e2",
+      "title": "Todo 2",
+      "completed": false
+    },
+    {
+      "id": "95b79953-3433-4ebc-87fa-3b48154dae65",
+      "title": "Todo 4",
+      "completed": false
+    },
+    {
+      "id": "07af1b2e-535e-45be-8627-f6c9573cec70",
+      "title": "Todo 6",
+      "completed": false
+    },
+    {
+      "id": "9b55bfc3-2527-499a-9bee-29d9d0cd3a88",
+      "title": "Todo 7",
+      "completed": false
+    }
+  ]
+}
