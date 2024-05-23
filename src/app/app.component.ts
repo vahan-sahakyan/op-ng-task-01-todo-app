@@ -1,4 +1,3 @@
-// app.component.ts
 import { Component, OnInit } from '@angular/core';
 import * as dayjs from 'dayjs';
 import { Observable, concatMap, from, take } from 'rxjs';
@@ -54,15 +53,15 @@ export class AppComponent implements OnInit {
     const completed = (e.target as HTMLInputElement).checked;
     this.todos$
       .pipe(
-        take(1), // Ensure we only subscribe once and get the latest value
-        concatMap((todos) => from(todos)), // Convert array to observable sequence
+        take(1),
+        concatMap((todos) => from(todos)),
         concatMap((todo) => {
           todo.completed = completed;
-          return this.todoService.updateTodo(todo); // Update each todo sequentially
+          return this.todoService.updateTodo(todo);
         })
       )
       .subscribe({
-        complete: () => this.todoService.fetchTodos(), // Refresh the todos after all updates are done
+        complete: () => this.todoService.fetchTodos(),
       });
   }
 

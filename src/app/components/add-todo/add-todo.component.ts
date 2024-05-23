@@ -15,7 +15,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
         />
         <button
           type="submit"
-          class="bg-blue-500 text-white p-2 px-6 rounded-r-md active:bg-blue-600"
+          class="bg-blue-600 active:bg-blue-700 dark:bg-blue-500 dark:active:bg-blue-600 text-white p-2 px-10 rounded-r-md"
         >
           Add
         </button>

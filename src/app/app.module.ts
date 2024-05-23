@@ -13,6 +13,7 @@ import { TodoListComponent } from './components/todo-list/todo-list.component';
 import { FooterInfoComponent } from './components/footer-info/footer-info.component';
 import { ClearCompletedComponent } from './components/clear-completed/clear-completed.component';
 import { TodoItemComponent } from './components/todo-item/todo-item.component';
+import { DateTimePipe } from './pipes/date-time.pipe';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { TodoItemComponent } from './components/todo-item/todo-item.component';
     FooterInfoComponent,
     ClearCompletedComponent,
     TodoItemComponent,
+    DateTimePipe,
   ],
   imports: [FormsModule, BrowserModule, AppRoutingModule, HttpClientModule],
   providers: [],

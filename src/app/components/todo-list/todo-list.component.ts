@@ -11,7 +11,7 @@ import { TodoService } from 'src/app/services/todo.service';
       <app-todo-item
         *ngFor="let todo of todos"
         (toggleCompleted)="handleToggleCompleted(todo)"
-        (editTodo)="handleEditTodo(todo)"
+        (editTodo)="handleEditTodo(todo, $event)"
         (deleteTodo)="handleDeleteTodo(todo)"
         [todo]="todo"
       ></app-todo-item>
@@ -39,8 +39,9 @@ export class TodoListComponent {
     todo.completed = !todo.completed;
     this.todoService.updateTodo(todo).subscribe();
   }
-  handleEditTodo(todo: ITodo) {
-    // this.todoService.updateTodo(todo).subscribe();
+  handleEditTodo(todo: ITodo, title: string) {
+    console.log(title);
+    this.todoService.updateTodo({ ...todo, title }).subscribe();
   }
   handleDeleteTodo(todo: ITodo) {
     this.todoService.deleteTodo(todo.id).subscribe();

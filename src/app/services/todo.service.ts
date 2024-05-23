@@ -1,4 +1,3 @@
-// todo.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ITodo } from '../models/todo.model';
@@ -8,9 +7,7 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
 };
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class TodoService {
   private todosSubject = new BehaviorSubject<ITodo[]>([]);
   public todos$ = this.todosSubject.asObservable();
@@ -37,23 +34,19 @@ export class TodoService {
   addTodo(todo: ITodo): Observable<ITodo> {
     return this.http
       .post<ITodo>(`${this.baseUrl}/todos`, todo, httpOptions)
-      .pipe(
-        tap(() => this.fetchTodos()) // Refresh todos list after adding
-      );
+      .pipe(tap(() => this.fetchTodos()));
   }
 
   deleteTodo(id: ITodo['id']): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/todos/${id}`).pipe(
-      tap(() => this.fetchTodos()) // Refresh todos list after deleting
-    );
+    return this.http
+      .delete<void>(`${this.baseUrl}/todos/${id}`)
+      .pipe(tap(() => this.fetchTodos()));
   }
 
   updateTodo(todo: ITodo): Observable<ITodo> {
     return this.http
       .put<ITodo>(`${this.baseUrl}/todos/${todo.id}`, todo, httpOptions)
-      .pipe(
-        tap(() => this.fetchTodos()) // Refresh todos list after updating
-      );
+      .pipe(tap(() => this.fetchTodos()));
   }
 
   private updateUncompletedTasks(todos: ITodo[]): void {

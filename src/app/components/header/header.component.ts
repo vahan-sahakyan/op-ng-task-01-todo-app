@@ -4,11 +4,15 @@ import { Component, EventEmitter, Output } from '@angular/core';
   selector: 'app-header',
   template: `
     <!-- Header Section -->
-    <div class="flex justify-between items-center mb-4 mt-10">
-      <h1 class="text-2xl font-bold text-center flex-grow dark:text-white">
+    <div
+      class="relative flex justify-between items-center mb-4 mt-10 select-none"
+    >
+      <h1
+        class="text-2xl font-bold text-center flex-grow dark:text-white select-none"
+      >
         TODO LIST
       </h1>
-      <div class="flex items-center ml-4 cursor-pointer">
+      <div class="flex ml-4 cursor-pointer absolute">
         <input
           type="checkbox"
           id="select-all"
