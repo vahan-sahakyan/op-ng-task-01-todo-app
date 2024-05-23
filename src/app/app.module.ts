@@ -5,13 +5,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
-import { TodosContainerComponent } from './component/todos-container/todos-container.component';
-import { CurrentDateComponent } from './component/current-date/current-date.component';
-import { HeaderComponent } from './component/header/header.component';
-import { AddTodoComponent } from './component/add-todo/add-todo.component';
-import { TodoListComponent } from './component/todo-list/todo-list.component';
-import { FooterInfoComponent } from './component/footer-info/footer-info.component';
-import { ClearCompletedComponent } from './component/clear-completed/clear-completed.component';
+import { TodosContainerComponent } from './components/todos-container/todos-container.component';
+import { CurrentDateComponent } from './components/current-date/current-date.component';
+import { HeaderComponent } from './components/header/header.component';
+import { AddTodoComponent } from './components/add-todo/add-todo.component';
+import { TodoListComponent } from './components/todo-list/todo-list.component';
+import { FooterInfoComponent } from './components/footer-info/footer-info.component';
+import { ClearCompletedComponent } from './components/clear-completed/clear-completed.component';
+import { TodoItemComponent } from './components/todo-item/todo-item.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { ClearCompletedComponent } from './component/clear-completed/clear-compl
     TodoListComponent,
     FooterInfoComponent,
     ClearCompletedComponent,
+    TodoItemComponent,
   ],
   imports: [FormsModule, BrowserModule, AppRoutingModule, HttpClientModule],
   providers: [],
