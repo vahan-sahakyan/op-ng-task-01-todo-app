@@ -33,6 +33,7 @@ import { ITodo } from 'src/app/models/todo.model';
             type="text"
             [value]="todo.title"
             [(ngModel)]="todo.title"
+            (input)="isDirty = true"
             (keydown.enter)="onEditTodo()"
             class="w-full dark:text-zinc-200 dark:bg-zinc-700 outline-none px-3 py-1"
           />
@@ -62,7 +63,7 @@ export class TodoItemComponent {
   @Input() todo: ITodo = {} as ITodo;
   @Input() editingId = '';
   @Output() toggleCompleted = new EventEmitter<void>();
-  @Output() editTodo = new EventEmitter<string>();
+  @Output() editTodo = new EventEmitter<{ title: string; isDirty: boolean }>();
   @Output() deleteTodo = new EventEmitter<void>();
   @Output() selectEditingId = new EventEmitter<string>();
   @ViewChild('editInputEl') editInputRef!: ElementRef<HTMLInputElement>;
@@ -77,8 +78,13 @@ export class TodoItemComponent {
     this.toggleCompleted.emit();
   }
   onEditTodo() {
-    if (this.isEditing) this.editTodo.emit(this.todo.title.trim());
+    if (this.isEditing)
+      this.editTodo.emit({
+        title: this.todo.title.trim(),
+        isDirty: this.isDirty,
+      });
     else this.selectEditingId.emit(this.todo.id);
+    this.isDirty = false;
   }
   onDeleteTodo() {
     if (!this.isEditing) this.deleteTodo.emit();
