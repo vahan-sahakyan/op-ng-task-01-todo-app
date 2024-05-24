@@ -1,17 +1,16 @@
 import { Component } from '@angular/core';
-import { combineLatest } from 'rxjs';
+import { Subject, combineLatest, takeUntil } from 'rxjs';
 import { ITodo } from 'src/app/models/todo.model';
 import { TodoService } from 'src/app/services/todo.service';
 
 @Component({
   selector: 'app-footer-info',
+  styleUrls: ['./footer-info.component.scss'],
   template: `
-    <!-- Uncompleted Tasks Count -->
-    <div class="text-right text-zinc-600 dark:text-zinc-200 mt-4">
+    <div class="text-right text-zinc-600 dark:text-zinc-200 mt-4 select-none">
       {{ uncompletedTasks.length }} uncompleted tasks
     </div>
   `,
-  styleUrls: ['./footer-info.component.scss'],
 })
 export class FooterInfoComponent {
   uncompletedTasks$ = this.todoService.uncompletedTasks$;
@@ -19,14 +18,21 @@ export class FooterInfoComponent {
   uncompletedTasks: ITodo[] = [];
   todos: ITodo[] = [];
 
+  destroy$ = new Subject<void>();
+
   constructor(private todoService: TodoService) {}
 
   ngOnInit(): void {
-    combineLatest([this.todos$, this.uncompletedTasks$]).subscribe(
-      ([todos, uncompletedTasks]) => {
+    combineLatest([this.todos$, this.uncompletedTasks$])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([todos, uncompletedTasks]) => {
         this.todos = todos;
         this.uncompletedTasks = uncompletedTasks;
-      }
-    );
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

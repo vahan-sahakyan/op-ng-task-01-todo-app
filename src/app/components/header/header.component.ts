@@ -2,8 +2,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-header',
+  styleUrls: ['./header.component.scss'],
   template: `
-    <!-- Header Section -->
     <div
       class="relative flex justify-between items-center mb-4 mt-10 select-none"
     >
@@ -25,7 +25,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
       </div>
     </div>
   `,
-  styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
   @Output() selectAll = new EventEmitter<Event>();

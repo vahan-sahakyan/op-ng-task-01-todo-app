@@ -1,6 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import * as dayjs from 'dayjs';
-import { Observable, concatMap, from, take } from 'rxjs';
+import {
+  Subject,
+  combineLatest,
+  concatMap,
+  forkJoin,
+  map,
+  take,
+  takeUntil,
+} from 'rxjs';
 import { ITodo } from './models/todo.model';
 import { TodoService } from './services/todo.service';
 
@@ -25,9 +33,12 @@ import { TodoService } from './services/todo.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  todos$: Observable<ITodo[]>;
-  currentDate = dayjs().format('DD/MM/YYYY hh:MM A');
+  uncompletedTasks$ = this.todoService.uncompletedTasks$;
   uncompletedTasks: ITodo[] = [];
+  todos$ = this.todoService.todos$;
+  todos: ITodo[] = [];
+  private destroy$ = new Subject<void>();
+  currentDate = dayjs().format('DD/MM/YYYY hh:MM A');
 
   constructor(private todoService: TodoService) {
     this.todos$ = this.todoService.todos$;
@@ -35,9 +46,12 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.todoService.fetchTodos();
-    this.todos$.subscribe((todos) => {
-      this.uncompletedTasks = this.getUncompletedTasks(todos);
-    });
+    combineLatest([this.todos$, this.uncompletedTasks$])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([todos, uncompletedTasks]) => {
+        this.todos = todos;
+        this.uncompletedTasks = uncompletedTasks;
+      });
   }
 
   handleAddTodo(newTodoTitle: string) {
@@ -51,40 +65,50 @@ export class AppComponent implements OnInit {
 
   handleSelectAll(e: Event) {
     const completed = (e.target as HTMLInputElement).checked;
+    let fetchCount = 0;
     this.todos$
       .pipe(
         take(1),
-        concatMap((todos) => from(todos)),
-        concatMap((todo) => {
-          todo.completed = completed;
-          return this.todoService.updateTodo(todo);
+        concatMap((todos) => {
+          const updateObservables = todos.map((todo) => {
+            todo.completed = completed;
+            return this.todoService.updateTodo(todo, true);
+          });
+          return forkJoin(updateObservables);
         })
       )
       .subscribe({
-        complete: () => this.todoService.fetchTodos(),
+        complete: () => {
+          if (!fetchCount++) this.todoService.fetchTodos();
+        },
       });
   }
 
   handleClearCompleted() {
-    this.todos$.subscribe((todos) => {
-      const completedTasks = todos.filter((t) => t.completed);
-      completedTasks.forEach((ct) =>
-        this.todoService.deleteTodo(ct.id).subscribe()
-      );
-    });
+    let fetchCount = 0;
+    this.todos$
+      .pipe(
+        take(1),
+        map((todos) => {
+          const completedTasks = todos.filter((t) => t.completed);
+          completedTasks.forEach((ct) =>
+            this.todoService.deleteTodo(ct.id, true).subscribe()
+          );
+        })
+      )
+      .subscribe({
+        complete: () => {
+          if (!fetchCount++) this.todoService.fetchTodos();
+        },
+      });
   }
 
   getUncompletedTasks(todos: ITodo[]): ITodo[] {
     return todos.filter((t) => !t.completed);
   }
-}
 
-/**
- *
- * PLAN
- *
- * 1. json-server DONE
- * 2. seperate components
- * 3. edit toggle
- *
- */
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+}

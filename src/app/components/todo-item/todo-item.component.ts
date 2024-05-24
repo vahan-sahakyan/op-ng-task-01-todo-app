@@ -12,9 +12,8 @@ import { ITodo } from 'src/app/models/todo.model';
   selector: 'app-todo-item',
   styleUrls: ['./todo-item.component.scss'],
   template: `
-    <!-- Todo Item -->
     <li
-      class="flex items-center justify-between bg-zinc-100 dark:bg-zinc-600 p-2 rounded-md mb-2"
+      class="flex items-center justify-between bg-zinc-100 dark:bg-zinc-600 p-2 rounded-md mb-2 select-none"
     >
       <div class="flex items-center px-2 grow">
         <input
@@ -24,12 +23,12 @@ import { ITodo } from 'src/app/models/todo.model';
           class="mr-2 cursor-pointer"
         />
         <span
-          *ngIf="!isEditing; else editInput"
+          *ngIf="!isEditing; else editInputEl"
           [ngClass]="{ 'line-through': !!todo.completed }"
           class="dark:text-zinc-200  px-3 py-1"
           >{{ todo.title }}</span
         >
-        <ng-template #editInput>
+        <ng-template #editInputEl>
           <input
             type="text"
             [value]="todo.title"
@@ -44,7 +43,7 @@ import { ITodo } from 'src/app/models/todo.model';
           (click)="onEditTodo()"
           class="text-blue-500 active:text-blue-700 dark:text-blue-400 dark:active:text-blue-500 mr-2"
         >
-          <i class="far {{ isEditing ? 'fa-check' : 'fa-edit' }}"></i>
+          <i class="fal {{ isEditing ? 'fa-check' : 'fa-edit' }}"></i>
           {{ isEditing ? 'Save' : 'Edit' }}
         </button>
         <button
@@ -52,7 +51,7 @@ import { ITodo } from 'src/app/models/todo.model';
           (click)="onDeleteTodo()"
           class="text-red-500 active:text-red-700 dark:text-red-400 dark:active:text-red-500"
         >
-          <i class="far {{ isEditing ? 'fa-xmark' : 'fa-trash' }}"></i>
+          <i class="fal {{ isEditing ? 'fa-xmark' : 'fa-trash' }}"></i>
           {{ isEditing ? 'Cancel' : 'Delete' }}
         </button>
       </div>
@@ -61,23 +60,28 @@ import { ITodo } from 'src/app/models/todo.model';
 })
 export class TodoItemComponent {
   @Input() todo: ITodo = {} as ITodo;
+  @Input() editingId = '';
   @Output() toggleCompleted = new EventEmitter<void>();
   @Output() editTodo = new EventEmitter<string>();
   @Output() deleteTodo = new EventEmitter<void>();
-  isEditing = false;
+  @Output() selectEditingId = new EventEmitter<string>();
+  @ViewChild('editInputEl') editInputRef!: ElementRef<HTMLInputElement>;
 
-  @ViewChild('editInput') editInputRef!: ElementRef<HTMLInputElement>;
+  isDirty = false;
+
+  get isEditing() {
+    return this.editingId === this.todo.id;
+  }
 
   onToggleCompleted() {
     this.toggleCompleted.emit();
   }
   onEditTodo() {
-    this.isEditing = !this.isEditing;
-    if (this.isEditing) return;
-    this.editTodo.emit(this.todo.title);
+    if (this.isEditing) this.editTodo.emit(this.todo.title.trim());
+    else this.selectEditingId.emit(this.todo.id);
   }
   onDeleteTodo() {
-    if (this.isEditing) return void (this.isEditing = !this.isEditing);
-    this.deleteTodo.emit();
+    if (!this.isEditing) this.deleteTodo.emit();
+    else this.selectEditingId.emit('');
   }
 }

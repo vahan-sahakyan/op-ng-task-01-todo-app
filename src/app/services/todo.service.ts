@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { ITodo } from '../models/todo.model';
-import { Observable, BehaviorSubject, tap } from 'rxjs';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -37,16 +37,16 @@ export class TodoService {
       .pipe(tap(() => this.fetchTodos()));
   }
 
-  deleteTodo(id: ITodo['id']): Observable<void> {
+  deleteTodo(id: ITodo['id'], isBulk = false): Observable<void> {
     return this.http
       .delete<void>(`${this.baseUrl}/todos/${id}`)
-      .pipe(tap(() => this.fetchTodos()));
+      .pipe(tap(() => !isBulk && this.fetchTodos()));
   }
 
-  updateTodo(todo: ITodo): Observable<ITodo> {
+  updateTodo(todo: ITodo, isBulk = false): Observable<ITodo> {
     return this.http
       .put<ITodo>(`${this.baseUrl}/todos/${todo.id}`, todo, httpOptions)
-      .pipe(tap(() => this.fetchTodos()));
+      .pipe(tap(() => !isBulk && this.fetchTodos()));
   }
 
   private updateUncompletedTasks(todos: ITodo[]): void {

@@ -11,11 +11,6 @@
       "completed": true
     },
     {
-      "id": "a9e7c885-4ec6-401f-91e3-7d92066a19ae",
-      "title": "Todo 3",
-      "completed": false
-    },
-    {
       "id": "c7436b75-056b-4ed9-b42f-d561ef1df50d",
       "title": "Todo 4",
       "completed": false
@@ -28,7 +23,7 @@
     {
       "id": "4736646e-7de9-4ed6-af35-8aee9c80dd07",
       "title": "Todo 6",
-      "completed": false
+      "completed": true
     },
     {
       "id": "9066c238-a783-45b2-b4e3-0f21870cde52",
@@ -38,11 +33,6 @@
     {
       "id": "a1054ab2-c96e-4ab5-9edc-09d8c548372c",
       "title": "Todo 8",
-      "completed": false
-    },
-    {
-      "id": "d413df49-1116-4c05-9468-7f2bef000af9",
-      "title": "Todo 9",
       "completed": false
     }
   ]

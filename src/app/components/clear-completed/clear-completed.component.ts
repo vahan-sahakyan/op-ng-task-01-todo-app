@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { combineLatest } from 'rxjs';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { Subject, combineLatest, takeUntil } from 'rxjs';
 import { ITodo } from 'src/app/models/todo.model';
 import { TodoService } from 'src/app/services/todo.service';
 
@@ -7,12 +7,11 @@ import { TodoService } from 'src/app/services/todo.service';
   selector: 'app-clear-completed',
   styleUrls: ['./clear-completed.component.scss'],
   template: `
-    <!-- Clear Completed Button -->
     <div>
       <button
         *ngIf="uncompletedTasks.length !== todos.length"
         (click)="onClearCompleted()"
-        class="bg-red-600 dark:bg-red-500 text-white mt-4 w-full py-2 rounded-md active:bg-red-700 dark:active:bg-red-600"
+        class="bg-red-600 dark:bg-red-500 text-white mt-4 w-full py-2 rounded-md active:bg-red-700 dark:active:bg-red-600 select-none"
       >
         Clear Completed
       </button>
@@ -25,20 +24,25 @@ export class ClearCompletedComponent {
   todos$ = this.todoService.todos$;
   uncompletedTasks: ITodo[] = [];
   todos: ITodo[] = [];
-  // JSON = JSON;
+  destroy$ = new Subject<void>();
 
   constructor(private todoService: TodoService) {}
 
   ngOnInit(): void {
-    combineLatest([this.todos$, this.uncompletedTasks$]).subscribe(
-      ([todos, uncompletedTasks]) => {
+    combineLatest([this.todos$, this.uncompletedTasks$])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([todos, uncompletedTasks]) => {
         this.todos = todos;
         this.uncompletedTasks = uncompletedTasks;
-      }
-    );
+      });
   }
 
   onClearCompleted() {
     this.clearCompleted.emit();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
