@@ -2,37 +2,42 @@
   "todos": [
     {
       "id": "4a1051e8-aa46-4e15-841b-f946dee83edc",
-      "title": "Todo 1",
+      "title": "Morning exercise routine and stretching",
       "completed": true
     },
     {
       "id": "42034976-9110-4524-8aea-8251191389c9",
-      "title": "Todo 2",
+      "title": "Prepare a healthy breakfast daily",
       "completed": true
     },
     {
       "id": "c7436b75-056b-4ed9-b42f-d561ef1df50d",
-      "title": "Todo 4",
-      "completed": false
+      "title": "Plan weekly grocery shopping trip",
+      "completed": true
     },
     {
       "id": "9eaf3437-4d49-4a10-b188-0ec3510f2c45",
-      "title": "Todo 5",
+      "title": "Read a chapter of a book",
       "completed": false
     },
     {
       "id": "4736646e-7de9-4ed6-af35-8aee9c80dd07",
-      "title": "Todo 6",
+      "title": "Organize and declutter the workspace",
       "completed": true
     },
     {
       "id": "9066c238-a783-45b2-b4e3-0f21870cde52",
-      "title": "Todo 7",
+      "title": "Evening walk and meditation practice",
       "completed": false
     },
     {
       "id": "a1054ab2-c96e-4ab5-9edc-09d8c548372c",
-      "title": "Todo 8",
+      "title": "Prepare meals for the next day",
+      "completed": true
+    },
+    {
+      "id": "ecfdde28-da4a-43a9-9ce4-b285ff6b4436",
+      "title": "Journal daily reflections and gratitude",
       "completed": false
     }
   ]
