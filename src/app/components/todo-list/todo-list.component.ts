@@ -11,18 +11,20 @@ import { TodoService } from 'src/app/services/todo.service';
       <app-todo-item
         *ngFor="let todo of todos; trackBy: trackByFn"
         (toggleCompleted)="handleToggleCompleted(todo)"
-        (editTodo)="handleEditTodo(todo, $event.title, $event.isDirty)"
+        (editOrSaveTodo)="
+          handleEditOrSaveTodo(todo, $event.title, $event.isDirty)
+        "
         (selectEditingId)="handleSelectEditingId($event)"
-        (deleteTodo)="handleDeleteTodo(todo)"
+        (deleteOrCancelTodo)="handleDeleteOrCancelTodo(todo)"
         [todo]="todo"
         [editingId]="editingId"
       ></app-todo-item>
 
       <li
         *ngIf="!todos.length"
-        class="text-center dark:text-gray-300 font-bold p-3 select-none"
+        class="text-center text-gray-400 dark:text-gray-300 font-bold p-3 select-none"
       >
-        All tasks has been completed
+        No Tasks to Display
       </li>
     </ul>
   `,
@@ -55,14 +57,14 @@ export class TodoListComponent {
   handleSelectEditingId(id: string) {
     this.editingId = id;
   }
-  handleEditTodo(todo: ITodo, title: string, isDirty: boolean) {
+  handleEditOrSaveTodo(todo: ITodo, title: string, isDirty: boolean) {
     if (isDirty)
       this.todoService
         .updateTodo({ ...todo, title, completed: false })
         .subscribe();
     this.editingId = '';
   }
-  handleDeleteTodo(todo: ITodo) {
+  handleDeleteOrCancelTodo(todo: ITodo) {
     this.todoService.deleteTodo(todo.id).subscribe();
   }
 

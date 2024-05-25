@@ -17,8 +17,9 @@ import { TodoService } from 'src/app/services/todo.service';
       <button
         *ngIf="uncompletedTasks.length !== todos.length"
         (click)="onClearCompleted()"
-        class="bg-red-600 dark:bg-red-500 text-white mt-4 w-full py-2 rounded-md active:bg-red-700 dark:active:bg-red-600 select-none"
+        class="bg-green-600 dark:bg-green-700 text-white mt-4 w-full py-2 rounded-md active:bg-green-700 dark:active:bg-green-800 select-none"
       >
+        <i class="fas fa-sparkles me-2"></i>
         Clear Completed
       </button>
     </div>

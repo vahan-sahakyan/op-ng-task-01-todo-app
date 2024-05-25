@@ -8,7 +8,9 @@ import { TodoService } from 'src/app/services/todo.service';
   styleUrls: ['./footer-info.component.scss'],
   template: `
     <div class="text-right text-zinc-600 dark:text-zinc-200 mt-4 select-none">
-      {{ uncompletedTasks.length }} uncompleted tasks
+      <ng-template [ngIf]="todos.length">
+        {{ uncompletedTasks.length }} uncompleted tasks
+      </ng-template>
     </div>
   `,
 })

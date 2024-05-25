@@ -17,9 +17,9 @@ import { TodoService } from 'src/app/services/todo.service';
       class="relative flex justify-between items-center mb-4 mt-10 select-none"
     >
       <h1
-        class="text-2xl font-bold text-center flex-grow dark:text-white select-none"
+        class="text-2xl text-blue-500 font-bold text-center flex-grow dark:text-blue-400 select-none"
       >
-        TODO LIST
+        Todo List
       </h1>
       <div class="flex ml-4 cursor-pointer absolute">
         <input
@@ -27,6 +27,9 @@ import { TodoService } from 'src/app/services/todo.service';
           id="select-all"
           [(ngModel)]="isSelectAll"
           (change)="onSelectAll()"
+          [indeterminate]="
+            !isSelectAll && uncompletedTasks.length !== todos.length
+          "
           class="mr-2 cursor-pointer"
           [disabled]="!todos.length"
         />
@@ -40,6 +43,7 @@ import { TodoService } from 'src/app/services/todo.service';
 export class HeaderComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   todos = [] as ITodo[];
+  uncompletedTasks = [] as ITodo[];
   isSelectAll = false;
 
   @Output() selectAll = new EventEmitter<boolean>();
@@ -51,6 +55,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(([todos, uncompletedTasks]) => {
         this.todos = todos;
+        this.uncompletedTasks = uncompletedTasks;
         this.isSelectAll = !todos.length ? false : !uncompletedTasks.length;
       });
   }

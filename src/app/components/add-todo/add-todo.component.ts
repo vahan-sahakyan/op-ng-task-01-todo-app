@@ -18,9 +18,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
         <button
           [disabled]="!newTodoTitle.trim()"
           type="submit"
-          class="bg-blue-600  dark:bg-blue-500 text-white p-2 px-10 ps-8 rounded-r-md select-none {{
-            !newTodoTitle.trim() &&
-              'cursor-not-allowed bg-gray-400 dark:bg-gray-500'
+          class="bg-blue-600  dark:bg-blue-500 text-white p-2 px-10 ps-8 rounded-r-md select-none ease-in-out duration-100 {{
+            !newTodoTitle.trim() && 'bg-gray-400 dark:bg-gray-500'
           }}"
         >
           <i class="fa-light fa-plus-circle pe-2"></i>
@@ -34,7 +33,7 @@ export class AddTodoComponent {
   @Output() addTodo = new EventEmitter<string>();
   newTodoTitle: string = '';
 
-  onAddTodo(): any {
+  onAddTodo() {
     if (!this.newTodoTitle.trim()) return;
     this.addTodo.emit(this.newTodoTitle.trim());
     this.newTodoTitle = '';
