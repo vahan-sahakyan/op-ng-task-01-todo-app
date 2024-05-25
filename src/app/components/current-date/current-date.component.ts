@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription, interval } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -16,19 +16,17 @@ import { map } from 'rxjs/operators';
     </div>
   `,
 })
-export class CurrentDateComponent implements OnDestroy {
+export class CurrentDateComponent implements OnInit, OnDestroy {
   now = new Date();
   private timerSubscription: Subscription | undefined;
 
-  constructor() {
+  ngOnInit(): void {
     this.timerSubscription = interval(59_000)
       .pipe(map(() => new Date()))
       .subscribe((date) => (this.now = date));
   }
 
   ngOnDestroy() {
-    if (this.timerSubscription) {
-      this.timerSubscription.unsubscribe();
-    }
+    this.timerSubscription?.unsubscribe?.();
   }
 }

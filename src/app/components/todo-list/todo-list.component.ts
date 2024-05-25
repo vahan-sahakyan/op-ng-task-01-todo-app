@@ -9,7 +9,7 @@ import { TodoService } from 'src/app/services/todo.service';
   template: `
     <ul>
       <app-todo-item
-        *ngFor="let todo of todos"
+        *ngFor="let todo of todos; trackBy: trackByFn"
         (toggleCompleted)="handleToggleCompleted(todo)"
         (editTodo)="handleEditTodo(todo, $event.title, $event.isDirty)"
         (selectEditingId)="handleSelectEditingId($event)"
@@ -28,17 +28,19 @@ import { TodoService } from 'src/app/services/todo.service';
   `,
 })
 export class TodoListComponent {
-  uncompletedTasks$ = this.todoService.uncompletedTasks$;
-  uncompletedTasks: ITodo[] = [];
-  todos$ = this.todoService.todos$;
-  todos: ITodo[] = [];
   private destroy$ = new Subject<void>();
+  uncompletedTasks: ITodo[] = [];
+  todos: ITodo[] = [];
   editingId = '';
+
+  trackByFn(_index: number, todo: ITodo): string | undefined {
+    return todo.id;
+  }
 
   constructor(private todoService: TodoService) {}
 
   ngOnInit(): void {
-    combineLatest([this.todos$, this.uncompletedTasks$])
+    combineLatest([this.todoService.todos$, this.todoService.uncompletedTasks$])
       .pipe(takeUntil(this.destroy$))
       .subscribe(([todos, uncompletedTasks]) => {
         this.todos = todos;

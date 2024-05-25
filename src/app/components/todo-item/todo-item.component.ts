@@ -22,11 +22,11 @@ import { ITodo } from 'src/app/models/todo.model';
           (change)="onToggleCompleted()"
           class="mr-2 cursor-pointer"
         />
-        <span
+        <pre
           *ngIf="!isEditing; else editInputEl"
           [ngClass]="{ 'line-through': !!todo.completed }"
-          class="dark:text-zinc-200  px-3 py-1"
-          >{{ todo.title }}</span
+          class="dark:text-zinc-200  px-3 py-1 font-sans"
+          >{{ todo.title }}</pre
         >
         <ng-template #editInputEl>
           <input
@@ -35,7 +35,7 @@ import { ITodo } from 'src/app/models/todo.model';
             [(ngModel)]="todo.title"
             (input)="isDirty = true"
             (keydown.enter)="onEditTodo()"
-            class="w-full dark:text-zinc-200 dark:bg-zinc-700 outline-none px-3 py-1"
+            class="w-full dark:text-zinc-200 dark:bg-zinc-700 outline-none px-3 py-1 rounded-full"
           />
         </ng-template>
       </div>

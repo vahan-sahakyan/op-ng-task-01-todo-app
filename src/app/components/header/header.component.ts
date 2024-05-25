@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { Subject, combineLatest, takeUntil } from 'rxjs';
+import { ITodo } from 'src/app/models/todo.model';
+import { TodoService } from 'src/app/services/todo.service';
 
 @Component({
   selector: 'app-header',
@@ -16,8 +25,10 @@ import { Component, EventEmitter, Output } from '@angular/core';
         <input
           type="checkbox"
           id="select-all"
-          (change)="onSelectAll($event)"
+          [(ngModel)]="isSelectAll"
+          (change)="onSelectAll()"
           class="mr-2 cursor-pointer"
+          [disabled]="!todos.length"
         />
         <label for="select-all" class="cursor-pointer dark:text-white">
           Select All
@@ -26,10 +37,30 @@ import { Component, EventEmitter, Output } from '@angular/core';
     </div>
   `,
 })
-export class HeaderComponent {
-  @Output() selectAll = new EventEmitter<Event>();
+export class HeaderComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+  todos = [] as ITodo[];
+  isSelectAll = false;
 
-  onSelectAll(e: Event) {
-    this.selectAll.emit(e);
+  @Output() selectAll = new EventEmitter<boolean>();
+
+  constructor(private todoService: TodoService) {}
+
+  ngOnInit(): void {
+    combineLatest([this.todoService.todos$, this.todoService.uncompletedTasks$])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([todos, uncompletedTasks]) => {
+        this.todos = todos;
+        this.isSelectAll = !todos.length ? false : !uncompletedTasks.length;
+      });
+  }
+
+  onSelectAll() {
+    this.selectAll.emit(this.isSelectAll);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -1,14 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import * as dayjs from 'dayjs';
-import {
-  Subject,
-  combineLatest,
-  concatMap,
-  forkJoin,
-  map,
-  take,
-  takeUntil,
-} from 'rxjs';
+import { Subject, combineLatest, forkJoin, takeUntil } from 'rxjs';
 import { ITodo } from './models/todo.model';
 import { TodoService } from './services/todo.service';
 
@@ -18,7 +10,7 @@ import { TodoService } from './services/todo.service';
     <div
       class="min-h-screen flex flex-col items-center bg-zinc-100 dark:bg-zinc-800 p-4"
     >
-      <app-todos-container>
+      <app-todos-container class="mt-10 mb-24">
         <app-current-date></app-current-date>
         <app-header (selectAll)="handleSelectAll($event)"></app-header>
         <app-add-todo (addTodo)="handleAddTodo($event)"></app-add-todo>
@@ -32,21 +24,17 @@ import { TodoService } from './services/todo.service';
   `,
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
-  uncompletedTasks$ = this.todoService.uncompletedTasks$;
-  uncompletedTasks: ITodo[] = [];
-  todos$ = this.todoService.todos$;
-  todos: ITodo[] = [];
+export class AppComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
+  uncompletedTasks: ITodo[] = [];
+  todos: ITodo[] = [];
   currentDate = dayjs().format('DD/MM/YYYY hh:MM A');
 
-  constructor(private todoService: TodoService) {
-    this.todos$ = this.todoService.todos$;
-  }
+  constructor(private todoService: TodoService) {}
 
   ngOnInit(): void {
     this.todoService.fetchTodos();
-    combineLatest([this.todos$, this.uncompletedTasks$])
+    combineLatest([this.todoService.todos$, this.todoService.uncompletedTasks$])
       .pipe(takeUntil(this.destroy$))
       .subscribe(([todos, uncompletedTasks]) => {
         this.todos = todos;
@@ -63,44 +51,34 @@ export class AppComponent implements OnInit {
     this.todoService.addTodo(todo).subscribe();
   }
 
-  handleSelectAll(e: Event) {
-    const completed = (e.target as HTMLInputElement).checked;
-    let fetchCount = 0;
-    this.todos$
-      .pipe(
-        take(1),
-        concatMap((todos) => {
-          const updateObservables = todos.map((todo) => {
-            todo.completed = completed;
-            return this.todoService.updateTodo(todo, true);
-          });
-          return forkJoin(updateObservables);
-        })
-      )
-      .subscribe({
-        complete: () => {
-          if (!fetchCount++) this.todoService.fetchTodos();
-        },
+  handleSelectAll(isSelectAll: boolean) {
+    const updateObservableArray$ = this.todos.map((todo) => {
+      todo.completed = isSelectAll;
+      return this.todoService.updateTodo(todo, true);
+    });
+    forkJoin(updateObservableArray$).subscribe({
+      next: () => {
+        this.todoService.fetchTodos();
+      },
+      error: (err) => console.error('Error while updating tasks', err),
+    });
+    isSelectAll &&
+      document.body.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+        inline: 'nearest',
       });
   }
 
   handleClearCompleted() {
-    let fetchCount = 0;
-    this.todos$
-      .pipe(
-        take(1),
-        map((todos) => {
-          const completedTasks = todos.filter((t) => t.completed);
-          completedTasks.forEach((ct) =>
-            this.todoService.deleteTodo(ct.id, true).subscribe()
-          );
-        })
-      )
-      .subscribe({
-        complete: () => {
-          if (!fetchCount++) this.todoService.fetchTodos();
-        },
-      });
+    const completedTasks = this.todos.filter((t) => t.completed);
+    const deleteObservableArray$ = completedTasks.map((ct) =>
+      this.todoService.deleteTodo(ct.id, true)
+    );
+    forkJoin(deleteObservableArray$).subscribe({
+      next: () => this.todoService.fetchTodos(),
+      error: (err) => console.error('Error while deleting tasks', err),
+    });
   }
 
   getUncompletedTasks(todos: ITodo[]): ITodo[] {

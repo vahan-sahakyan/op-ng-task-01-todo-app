@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { Subject, combineLatest, takeUntil } from 'rxjs';
 import { ITodo } from 'src/app/models/todo.model';
 import { TodoService } from 'src/app/services/todo.service';
@@ -18,18 +24,16 @@ import { TodoService } from 'src/app/services/todo.service';
     </div>
   `,
 })
-export class ClearCompletedComponent {
+export class ClearCompletedComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   @Output() clearCompleted = new EventEmitter<void>();
-  uncompletedTasks$ = this.todoService.uncompletedTasks$;
-  todos$ = this.todoService.todos$;
   uncompletedTasks: ITodo[] = [];
   todos: ITodo[] = [];
-  destroy$ = new Subject<void>();
 
   constructor(private todoService: TodoService) {}
 
   ngOnInit(): void {
-    combineLatest([this.todos$, this.uncompletedTasks$])
+    combineLatest([this.todoService.todos$, this.todoService.uncompletedTasks$])
       .pipe(takeUntil(this.destroy$))
       .subscribe(([todos, uncompletedTasks]) => {
         this.todos = todos;
