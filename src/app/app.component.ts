@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import * as dayjs from 'dayjs';
 import { Subject, combineLatest, forkJoin, takeUntil } from 'rxjs';
 import { ITodo } from './models/todo.model';
 import { TodoService } from './services/todo.service';
 
 @Component({
   selector: 'app-root',
+  styleUrls: ['./app.component.scss'],
   template: `
     <div
       class="min-h-screen flex flex-col items-center bg-zinc-100 dark:bg-zinc-800 p-4"
@@ -22,13 +22,12 @@ import { TodoService } from './services/todo.service';
       </app-todos-container>
     </div>
   `,
-  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   uncompletedTasks: ITodo[] = [];
   todos: ITodo[] = [];
-  currentDate = dayjs().format('DD/MM/YYYY hh:MM A');
+  currentDate = new Date();
 
   constructor(private todoService: TodoService) {}
 

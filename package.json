@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "npm run server & ng serve",
+    "start": "npm run server & ng serve --host 0.0.0.0",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -19,7 +19,6 @@
     "@angular/platform-browser": "^16.2.0",
     "@angular/platform-browser-dynamic": "^16.2.0",
     "@angular/router": "^16.2.0",
-    "dayjs": "^1.11.11",
     "json-server": "^1.0.0-beta.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

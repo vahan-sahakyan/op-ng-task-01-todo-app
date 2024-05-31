@@ -11,7 +11,7 @@ import { map } from 'rxjs/operators';
         class="bg-zinc-100 dark:bg-zinc-800 rounded-lg text-zinc-800 dark:text-zinc-200 p-2 pe-4 select-none"
       >
         <i class="fal fa-calendar mx-2"></i>
-        {{ now | dateTime }}
+        {{ now | date : 'dd/MM/yyyy hh:mm a' }}
       </div>
     </div>
   `,

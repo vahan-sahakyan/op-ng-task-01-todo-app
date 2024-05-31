@@ -1,4 +1,5 @@
 import {
+  AfterViewChecked,
   Component,
   ElementRef,
   EventEmitter,
@@ -15,7 +16,7 @@ import { ITodo } from 'src/app/models/todo.model';
     <li
       class="flex items-center justify-between bg-zinc-100 dark:bg-zinc-600 p-2 rounded-md mb-2 select-none"
     >
-      <div class="flex items-center px-2 grow">
+      <figure class="flex items-center px-2 grow">
         <input
           type="checkbox"
           [checked]="todo.completed"
@@ -23,23 +24,25 @@ import { ITodo } from 'src/app/models/todo.model';
           class="mr-2 cursor-pointer"
         />
         <pre
-          *ngIf="!isEditing; else editInputEl"
+          *ngIf="!isEditing; else editInputTemplate"
           [ngClass]="{ 'line-through': todo.completed }"
           class="dark:text-zinc-200  px-3 py-1 font-sans"
           >{{ todo.title }}</pre
         >
-        <ng-template #editInputEl>
+        <ng-template #editInputTemplate>
           <input
+            #inputElementRef
             type="text"
             [defaultValue]="todo.title"
             [(ngModel)]="editingTitle"
             (keydown.enter)="onEditOrSaveTodo()"
+            (keydown.esc)="onDeleteOrCancelTodo()"
             class="w-full dark:text-zinc-200
           dark:bg-zinc-700 outline-none px-3 py-1 rounded-full"
           />
         </ng-template>
-      </div>
-      <div [style.width]="'150px'" class="flex items-center px-2">
+      </figure>
+      <aside [style.width]="'150px'" class="flex items-center px-2">
         <button
           (click)="onEditOrSaveTodo()"
           [disabled]="todo.completed"
@@ -74,11 +77,11 @@ import { ITodo } from 'src/app/models/todo.model';
           ></i>
           {{ isEditing ? 'Cancel' : todo.completed ? 'Clear' : 'Delete' }}
         </button>
-      </div>
+      </aside>
     </li>
   `,
 })
-export class TodoItemComponent {
+export class TodoItemComponent implements AfterViewChecked {
   @Input() todo: ITodo = {} as ITodo;
   @Input() editingId = '';
   @Output() toggleCompleted = new EventEmitter<void>();
@@ -88,7 +91,7 @@ export class TodoItemComponent {
   }>();
   @Output() deleteOrCancelTodo = new EventEmitter<void>();
   @Output() selectEditingId = new EventEmitter<string>();
-  @ViewChild('editInputEl') editInputRef!: ElementRef<HTMLInputElement>;
+  @ViewChild('inputElementRef') inputElementRef!: ElementRef<HTMLInputElement>;
   prevTitle = '';
   editingTitle = '';
 
@@ -98,6 +101,11 @@ export class TodoItemComponent {
 
   get isEditing() {
     return this.editingId === this.todo.id;
+  }
+
+  ngAfterViewChecked() {
+    if (this.isEditing && this.inputElementRef)
+      this.inputElementRef.nativeElement.focus();
   }
 
   onToggleCompleted() {

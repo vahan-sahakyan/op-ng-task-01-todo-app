@@ -9,13 +9,25 @@ const httpOptions = {
 
 @Injectable({ providedIn: 'root' })
 export class TodoService {
+  private baseUrl = `http://${location.hostname}:5001`;
+
   private todosSubject = new BehaviorSubject<ITodo[]>([]);
   public todos$ = this.todosSubject.asObservable();
+  public getTodos(): ITodo[] {
+    return this.todosSubject.value;
+  }
+  public setTodos(todos: ITodo[]): void {
+    this.todosSubject.next(todos);
+  }
 
   private uncompletedTasksSubject = new BehaviorSubject<ITodo[]>([]);
   public uncompletedTasks$ = this.uncompletedTasksSubject.asObservable();
-
-  private baseUrl = 'http://localhost:5001';
+  public getUncompletedTasks(): ITodo[] {
+    return this.uncompletedTasksSubject.value;
+  }
+  public setUncompletedTasks(todos: ITodo[]): void {
+    this.uncompletedTasksSubject.next(todos);
+  }
 
   constructor(private http: HttpClient) {}
 
@@ -24,8 +36,8 @@ export class TodoService {
       .get<ITodo[]>(`${this.baseUrl}/todos`)
       .pipe(
         tap((todos) => {
-          this.todosSubject.next(todos);
-          this.updateUncompletedTasks(todos);
+          this.setTodos(todos);
+          this.setUncompletedTasks(todos.filter((todo) => !todo.completed));
         })
       )
       .subscribe();
@@ -47,10 +59,5 @@ export class TodoService {
     return this.http
       .put<ITodo>(`${this.baseUrl}/todos/${todo.id}`, todo, httpOptions)
       .pipe(tap(() => !isBulk && this.fetchTodos()));
-  }
-
-  private updateUncompletedTasks(todos: ITodo[]): void {
-    const uncompletedTasks = todos.filter((todo) => !todo.completed);
-    this.uncompletedTasksSubject.next(uncompletedTasks);
   }
 }

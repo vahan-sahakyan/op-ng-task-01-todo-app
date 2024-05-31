@@ -16,8 +16,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
         />
 
         <button
-          [disabled]="!newTodoTitle.trim()"
           type="submit"
+          [disabled]="!newTodoTitle.trim()"
           class="bg-blue-600  dark:bg-blue-500 text-white p-2 px-10 ps-8 rounded-r-md select-none ease-in-out duration-100 {{
             !newTodoTitle.trim() && 'bg-gray-400 dark:bg-gray-500'
           }}"
