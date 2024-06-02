@@ -8,10 +8,10 @@
 - `ng serve`
 - `json-server --watch db.json --port 5001`
 >
-> **API:** $~~$ [json-server](./package.json#L22)
+> **API:**  [json-server](./package.json#L22)
 >
-> **Storage:** $~~$ [db.json](./db.json)
+> **Storage:**  [db.json](./db.json)
 >
-> **Styling:** $~~$ [tailwindcss](./package.json#L40)
+> **Styling:**  [tailwindcss](./package.json#L40)
 >
-> **Icons:** $~~$ [font-awesome](./src/styles.scss#L1)
+> **Icons:**  [font-awesome](./src/styles.scss#L1)
