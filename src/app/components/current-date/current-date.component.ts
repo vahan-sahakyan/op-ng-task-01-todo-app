@@ -18,7 +18,7 @@ import { map } from 'rxjs/operators';
 })
 export class CurrentDateComponent implements OnInit, OnDestroy {
   now = new Date();
-  private timerSubscription: Subscription | undefined;
+  private timerSubscription?: Subscription ;
 
   ngOnInit(): void {
     this.timerSubscription = interval(59_000)

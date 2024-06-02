@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Subject, combineLatest, takeUntil } from 'rxjs';
 import { ITodo } from 'src/app/models/todo.model';
 import { TodoService } from 'src/app/services/todo.service';
@@ -11,9 +11,7 @@ import { TodoService } from 'src/app/services/todo.service';
       <app-todo-item
         *ngFor="let todo of todos; trackBy: trackByFn"
         (toggleCompleted)="handleToggleCompleted(todo)"
-        (editOrSaveTodo)="
-          handleEditOrSaveTodo(todo, $event.title, $event.isDirty)
-        "
+        (editOrSaveTodo)="handleEditOrSaveTodo(todo, $event.title, $event.isDirty)"
         (selectEditingId)="handleSelectEditingId($event)"
         (deleteOrCancelTodo)="handleDeleteOrCancelTodo(todo)"
         [todo]="todo"
@@ -30,9 +28,10 @@ import { TodoService } from 'src/app/services/todo.service';
   `,
 })
 export class TodoListComponent {
+  @Input() todos: ITodo[] = [];
+
   private destroy$ = new Subject<void>();
   uncompletedTasks: ITodo[] = [];
-  todos: ITodo[] = [];
   editingId = '';
 
   trackByFn(_index: number, todo: ITodo): string | undefined {
@@ -41,14 +40,15 @@ export class TodoListComponent {
 
   constructor(private todoService: TodoService) {}
 
-  ngOnInit(): void {
-    combineLatest([this.todoService.todos$, this.todoService.uncompletedTasks$])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(([todos, uncompletedTasks]) => {
-        this.todos = todos;
-        this.uncompletedTasks = uncompletedTasks;
-      });
-  }
+  // repeated code. the data is already being retrieved from the app component.
+  // ngOnInit(): void {
+    // combineLatest([this.todoService.todos$, this.todoService.uncompletedTasks$])
+    //   .pipe(takeUntil(this.destroy$))
+    //   .subscribe(([todos, uncompletedTasks]) => {
+    //     this.todos = todos;
+    //     this.uncompletedTasks = uncompletedTasks;
+    //   });
+  // }
 
   handleToggleCompleted(todo: ITodo) {
     todo.completed = !todo.completed;

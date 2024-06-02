@@ -1,0 +1,10 @@
+<div class="min-h-screen flex flex-col items-center bg-zinc-100 dark:bg-zinc-800 p-4">
+  <app-todos-container class="mt-10 mb-24">
+    <app-current-date></app-current-date>
+    <app-header (selectAll)="handleSelectAll($event)"></app-header>
+    <app-add-todo (addTodo)="handleAddTodo($event)"></app-add-todo>
+    <app-todo-list [todos]="todos"></app-todo-list>
+    <app-footer-info></app-footer-info>
+    <app-clear-completed (clearCompleted)="handleClearCompleted()"></app-clear-completed>
+  </app-todos-container>
+</div>

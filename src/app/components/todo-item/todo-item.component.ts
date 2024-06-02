@@ -46,15 +46,16 @@ import { ITodo } from 'src/app/models/todo.model';
         <button
           (click)="onEditOrSaveTodo()"
           [disabled]="todo.completed"
-          class=" mr-2 {{
-            todo.completed
-              ? 'pointer-events-none text-zinc-300 dark:text-zinc-500 opacity-0'
-              : 'text-blue-500 active:text-blue-700 dark:text-blue-400 dark:active:text-blue-500'
-          }}"
+          class="mr-2"
+          [ngClass]="todo.completed
+            ? 'pointer-events-none text-zinc-300 dark:text-zinc-500 opacity-0'
+            : 'text-blue-500 active:text-blue-700 dark:text-blue-400 dark:active:text-blue-500'"
         >
+        <!-- use ngClass -->
           <i class="fal {{ isEditing ? 'fa-check' : 'fa-edit' }}"></i>
           {{ isEditing ? 'Save' : 'Edit' }}
         </button>
+        <!-- use ngClass -->
         <button
           [style.width]="'70px'"
           (click)="onDeleteOrCancelTodo()"
@@ -66,6 +67,7 @@ import { ITodo } from 'src/app/models/todo.model';
               : 'text-red-500 active:text-red-700 dark:text-red-400 dark:active:text-red-500'
           }}"
         >
+          <!-- use ngClass -->
           <i
             class="fal {{
               isEditing

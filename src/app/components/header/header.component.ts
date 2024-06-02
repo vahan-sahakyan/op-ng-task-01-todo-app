@@ -13,12 +13,8 @@ import { TodoService } from 'src/app/services/todo.service';
   selector: 'app-header',
   styleUrls: ['./header.component.scss'],
   template: `
-    <div
-      class="relative flex justify-between items-center mb-4 mt-10 select-none"
-    >
-      <h1
-        class="text-2xl text-blue-500 font-bold text-center flex-grow dark:text-blue-400 select-none"
-      >
+    <div class="relative flex justify-between items-center mb-4 mt-10 select-none">
+      <h1 class="text-2xl text-blue-500 font-bold text-center flex-grow dark:text-blue-400 select-none">
         Todo List
       </h1>
       <div class="flex ml-4 cursor-pointer absolute">
@@ -50,6 +46,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(private todoService: TodoService) {}
 
+  // repeated code.
   ngOnInit(): void {
     combineLatest([this.todoService.todos$, this.todoService.uncompletedTasks$])
       .pipe(takeUntil(this.destroy$))

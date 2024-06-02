@@ -33,6 +33,7 @@ export class ClearCompletedComponent implements OnInit, OnDestroy {
 
   constructor(private todoService: TodoService) {}
 
+  // repeated code.
   ngOnInit(): void {
     combineLatest([this.todoService.todos$, this.todoService.uncompletedTasks$])
       .pipe(takeUntil(this.destroy$))

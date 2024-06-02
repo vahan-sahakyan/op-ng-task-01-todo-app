@@ -2,7 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { ITodo } from '../models/todo.model';
-
+// I like that you have created a mock DB and an API but for this task, you shouldn't complicate things.
+// so I will not judge anything here.
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
 };

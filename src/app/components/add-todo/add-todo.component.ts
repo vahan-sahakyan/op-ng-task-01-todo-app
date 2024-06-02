@@ -15,6 +15,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
           placeholder="Add a new task"
         />
 
+        <!-- use ngClass -->
         <button
           type="submit"
           [disabled]="!newTodoTitle.trim()"

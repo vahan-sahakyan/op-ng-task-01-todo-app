@@ -3,25 +3,17 @@ import { Subject, combineLatest, forkJoin, takeUntil } from 'rxjs';
 import { ITodo } from './models/todo.model';
 import { TodoService } from './services/todo.service';
 
+// Notes:
+// create html file for the component.
+// use more readable variables.
+// put docs on all the methods and their return type.
+// put types for the callback functions parameters.
+// these notes should apply on all ts files.
+
 @Component({
   selector: 'app-root',
   styleUrls: ['./app.component.scss'],
-  template: `
-    <div
-      class="min-h-screen flex flex-col items-center bg-zinc-100 dark:bg-zinc-800 p-4"
-    >
-      <app-todos-container class="mt-10 mb-24">
-        <app-current-date></app-current-date>
-        <app-header (selectAll)="handleSelectAll($event)"></app-header>
-        <app-add-todo (addTodo)="handleAddTodo($event)"></app-add-todo>
-        <app-todo-list></app-todo-list>
-        <app-footer-info></app-footer-info>
-        <app-clear-completed
-          (clearCompleted)="handleClearCompleted()"
-        ></app-clear-completed>
-      </app-todos-container>
-    </div>
-  `,
+  templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
@@ -41,6 +33,10 @@ export class AppComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Handles adding a new todo item to the list.
+   * @param newTodoTitle the title of the todo item.
+   */
   handleAddTodo(newTodoTitle: string) {
     const todo = {
       id: window.crypto.randomUUID(),
@@ -51,6 +47,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   handleSelectAll(isSelectAll: boolean) {
+    // instead of updating each todo item like this (multiple endpoint hits), maybe you can create a new endpoint in todo service
+    // to handle that.
+    // this.todoService.toggleAllTodoItems(true or false)
+
     const updateObservableArray$ = this.todos.map((todo) => {
       todo.completed = isSelectAll;
       return this.todoService.updateTodo(todo, true);
@@ -61,6 +61,8 @@ export class AppComponent implements OnInit, OnDestroy {
       },
       error: (err) => console.error('Error while updating tasks', err),
     });
+
+    // use ref (viewChild) instead of document.
     isSelectAll &&
       document.body.scrollIntoView({
         behavior: 'smooth',
@@ -70,7 +72,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   handleClearCompleted() {
-    const completedTasks = this.todos.filter((t) => t.completed);
+    const completedTasks = this.todos.filter((item) => item.completed);
     const deleteObservableArray$ = completedTasks.map((ct) =>
       this.todoService.deleteTodo(ct.id, true)
     );
