@@ -1,0 +1,15 @@
+<div class="relative flex justify-between items-center mb-4 mt-10 select-none">
+  <h1 class="text-2xl text-blue-500 font-bold text-center flex-grow dark:text-blue-400 select-none">Todo List</h1>
+  <div class="flex ml-4 cursor-pointer absolute">
+    <input
+      type="checkbox"
+      id="select-all"
+      [(ngModel)]="isSelectAll"
+      (change)="onSelectAll()"
+      [indeterminate]="!isSelectAll && uncompletedTasks.length !== todos.length"
+      class="mr-2 cursor-pointer"
+      [disabled]="!todos.length"
+    />
+    <label for="select-all" class="cursor-pointer dark:text-white"> Select All </label>
+  </div>
+</div>

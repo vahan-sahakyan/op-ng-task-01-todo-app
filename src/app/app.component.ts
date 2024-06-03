@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, combineLatest, forkJoin, takeUntil } from 'rxjs';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Subject, combineLatest, takeUntil } from 'rxjs';
 import { ITodo } from './models/todo.model';
 import { TodoService } from './services/todo.service';
 
@@ -20,6 +20,7 @@ export class AppComponent implements OnInit, OnDestroy {
   uncompletedTasks: ITodo[] = [];
   todos: ITodo[] = [];
   currentDate = new Date();
+  @ViewChild('appCompoenentRef') appCompoenentRef!: ElementRef<HTMLDivElement>;
 
   constructor(private todoService: TodoService) {}
 
@@ -37,7 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
    * Handles adding a new todo item to the list.
    * @param newTodoTitle the title of the todo item.
    */
-  handleAddTodo(newTodoTitle: string) {
+  handleAddTodo(newTodoTitle: string): void {
     const todo = {
       id: window.crypto.randomUUID(),
       title: newTodoTitle,
@@ -46,44 +47,29 @@ export class AppComponent implements OnInit, OnDestroy {
     this.todoService.addTodo(todo).subscribe();
   }
 
-  handleSelectAll(isSelectAll: boolean) {
-    // instead of updating each todo item like this (multiple endpoint hits), maybe you can create a new endpoint in todo service
-    // to handle that.
-    // this.todoService.toggleAllTodoItems(true or false)
-
-    const updateObservableArray$ = this.todos.map((todo) => {
-      todo.completed = isSelectAll;
-      return this.todoService.updateTodo(todo, true);
-    });
-    forkJoin(updateObservableArray$).subscribe({
-      next: () => {
-        this.todoService.fetchTodos();
-      },
+  /**
+   * Handles toggling all todo items.
+   * @param isSelectAll
+   */
+  handleSelectAll(isSelectAll: boolean): void {
+    this.todoService.toggleAllTodoItems(isSelectAll).subscribe({
+      next: () => this.todoService.fetchTodos(),
       error: (err) => console.error('Error while updating tasks', err),
     });
 
-    // use ref (viewChild) instead of document.
-    isSelectAll &&
-      document.body.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end',
-        inline: 'nearest',
-      });
+    if (isSelectAll) {
+      this.appCompoenentRef.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    }
   }
 
-  handleClearCompleted() {
-    const completedTasks = this.todos.filter((item) => item.completed);
-    const deleteObservableArray$ = completedTasks.map((ct) =>
-      this.todoService.deleteTodo(ct.id, true)
-    );
-    forkJoin(deleteObservableArray$).subscribe({
+  /**
+   * Handles deleting all completed todo items.
+   */
+  handleClearCompleted(): void {
+    this.todoService.deleteCompletedTodos().subscribe({
       next: () => this.todoService.fetchTodos(),
       error: (err) => console.error('Error while deleting tasks', err),
     });
-  }
-
-  getUncompletedTasks(todos: ITodo[]): ITodo[] {
-    return todos.filter((t) => !t.completed);
   }
 
   ngOnDestroy(): void {

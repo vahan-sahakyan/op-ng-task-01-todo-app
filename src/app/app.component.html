@@ -1,10 +1,14 @@
-<div class="min-h-screen flex flex-col items-center bg-zinc-100 dark:bg-zinc-800 p-4">
-  <app-todos-container class="mt-10 mb-24">
-    <app-current-date></app-current-date>
-    <app-header (selectAll)="handleSelectAll($event)"></app-header>
-    <app-add-todo (addTodo)="handleAddTodo($event)"></app-add-todo>
-    <app-todo-list [todos]="todos"></app-todo-list>
-    <app-footer-info></app-footer-info>
-    <app-clear-completed (clearCompleted)="handleClearCompleted()"></app-clear-completed>
-  </app-todos-container>
+<div #appCompoenentRef class="min-h-screen flex flex-col items-center bg-zinc-100 dark:bg-zinc-800 p-4">
+  <div class="bg-white dark:bg-zinc-700 rounded-lg shadow-md p-6 mt-10 mb-24 todos-container">
+    <app-current-date />
+    <app-header [todos]="todos" [uncompletedTasks]="uncompletedTasks" (selectAll)="handleSelectAll($event)" />
+    <app-add-todo (addTodo)="handleAddTodo($event)" />
+    <app-todo-list [todos]="todos" [uncompletedTasks]="uncompletedTasks" />
+    <app-footer-info [todos]="todos" [uncompletedTasks]="uncompletedTasks" />
+    <app-clear-completed
+      [todos]="todos"
+      [uncompletedTasks]="uncompletedTasks"
+      (clearCompleted)="handleClearCompleted()"
+    />
+  </div>
 </div>

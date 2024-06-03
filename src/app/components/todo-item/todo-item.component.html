@@ -1,0 +1,51 @@
+<li class="flex items-center justify-between bg-zinc-100 dark:bg-zinc-600 p-2 rounded-md mb-2 select-none">
+  <figure class="flex items-center px-2 grow">
+    <input type="checkbox" [checked]="todo.completed" (change)="onToggleCompleted()" class="mr-2 cursor-pointer" />
+    <pre
+      *ngIf="!isEditing; else editInputTemplate"
+      [ngClass]="{ 'line-through': todo.completed }"
+      class="dark:text-zinc-200 px-3 py-1 font-sans"
+      >{{ todo.title }}</pre
+    >
+    <ng-template #editInputTemplate>
+      <input
+        #inputElementRef
+        type="text"
+        [defaultValue]="todo.title"
+        [(ngModel)]="editingTitle"
+        (keydown.enter)="onEditOrSaveTodo()"
+        (keydown.esc)="onDeleteOrCancelTodo()"
+        class="w-full dark:text-zinc-200 dark:bg-zinc-700 outline-none px-3 py-1 rounded-full"
+      />
+    </ng-template>
+  </figure>
+  <aside [style.width]="'150px'" class="flex items-center px-2">
+    <button
+      (click)="onEditOrSaveTodo()"
+      [disabled]="todo.completed"
+      class="mr-2"
+      [ngClass]="
+        todo.completed
+          ? 'pointer-events-none text-zinc-300 dark:text-zinc-500 opacity-0'
+          : 'text-blue-500 active:text-blue-700 dark:text-blue-400 dark:active:text-blue-500'
+      "
+    >
+      <i class="fal" [ngClass]="isEditing ? 'fa-check' : 'fa-edit'"></i>
+      {{ isEditing ? "Save" : "Edit" }}
+    </button>
+    <button
+      [style.width]="'70px'"
+      (click)="onDeleteOrCancelTodo()"
+      [ngClass]="
+        isEditing
+          ? 'text-zinc-700 dark:text-zinc-300'
+          : todo.completed
+          ? 'text-green-600 active:text-green-700 dark:text-green-500 dark:active:text-green-600'
+          : 'text-red-500 active:text-red-700 dark:text-red-400 dark:active:text-red-500'
+      "
+    >
+      <i class="fal" [ngClass]="isEditing ? 'fa-xmark' : todo.completed ? 'fa-sparkles' : 'fa-trash'"></i>
+      {{ isEditing ? "Cancel" : todo.completed ? "Clear" : "Delete" }}
+    </button>
+  </aside>
+</li>
