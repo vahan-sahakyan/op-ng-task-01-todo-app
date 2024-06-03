@@ -1,0 +1,14 @@
+<div #appCompoenentRef class="min-h-screen flex flex-col items-center bg-zinc-100 dark:bg-zinc-800 p-4">
+  <div class="bg-white dark:bg-zinc-700 rounded-lg shadow-md p-6 mt-10 mb-24 todos-container">
+    <app-current-date />
+    <app-header [todos]="todos" [uncompletedTasks]="uncompletedTasks" (selectAll)="handleSelectAll($event)" />
+    <app-add-todo (addTodo)="handleAddTodo($event)" />
+    <app-todo-list [todos]="todos" [uncompletedTasks]="uncompletedTasks" />
+    <app-footer-info [todos]="todos" [uncompletedTasks]="uncompletedTasks" />
+    <app-clear-completed
+      [todos]="todos"
+      [uncompletedTasks]="uncompletedTasks"
+      (clearCompleted)="handleClearCompleted()"
+    />
+  </div>
+</div>

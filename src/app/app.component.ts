@@ -1,33 +1,26 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, combineLatest, forkJoin, takeUntil } from 'rxjs';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Subject, combineLatest, takeUntil } from 'rxjs';
 import { ITodo } from './models/todo.model';
 import { TodoService } from './services/todo.service';
+
+// Notes:
+// create html file for the component.
+// use more readable variables.
+// put docs on all the methods and their return type.
+// put types for the callback functions parameters.
+// these notes should apply on all ts files.
 
 @Component({
   selector: 'app-root',
   styleUrls: ['./app.component.scss'],
-  template: `
-    <div
-      class="min-h-screen flex flex-col items-center bg-zinc-100 dark:bg-zinc-800 p-4"
-    >
-      <app-todos-container class="mt-10 mb-24">
-        <app-current-date></app-current-date>
-        <app-header (selectAll)="handleSelectAll($event)"></app-header>
-        <app-add-todo (addTodo)="handleAddTodo($event)"></app-add-todo>
-        <app-todo-list></app-todo-list>
-        <app-footer-info></app-footer-info>
-        <app-clear-completed
-          (clearCompleted)="handleClearCompleted()"
-        ></app-clear-completed>
-      </app-todos-container>
-    </div>
-  `,
+  templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   uncompletedTasks: ITodo[] = [];
   todos: ITodo[] = [];
   currentDate = new Date();
+  @ViewChild('appCompoenentRef') appCompoenentRef!: ElementRef<HTMLDivElement>;
 
   constructor(private todoService: TodoService) {}
 
@@ -41,7 +34,11 @@ export class AppComponent implements OnInit, OnDestroy {
       });
   }
 
-  handleAddTodo(newTodoTitle: string) {
+  /**
+   * Handles adding a new todo item to the list.
+   * @param newTodoTitle the title of the todo item.
+   */
+  handleAddTodo(newTodoTitle: string): void {
     const todo = {
       id: window.crypto.randomUUID(),
       title: newTodoTitle,
@@ -50,38 +47,29 @@ export class AppComponent implements OnInit, OnDestroy {
     this.todoService.addTodo(todo).subscribe();
   }
 
-  handleSelectAll(isSelectAll: boolean) {
-    const updateObservableArray$ = this.todos.map((todo) => {
-      todo.completed = isSelectAll;
-      return this.todoService.updateTodo(todo, true);
-    });
-    forkJoin(updateObservableArray$).subscribe({
-      next: () => {
-        this.todoService.fetchTodos();
-      },
+  /**
+   * Handles toggling all todo items.
+   * @param isSelectAll
+   */
+  handleSelectAll(isSelectAll: boolean): void {
+    this.todoService.toggleAllTodoItems(isSelectAll).subscribe({
+      next: () => this.todoService.fetchTodos(),
       error: (err) => console.error('Error while updating tasks', err),
     });
-    isSelectAll &&
-      document.body.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end',
-        inline: 'nearest',
-      });
+
+    if (isSelectAll) {
+      this.appCompoenentRef.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    }
   }
 
-  handleClearCompleted() {
-    const completedTasks = this.todos.filter((t) => t.completed);
-    const deleteObservableArray$ = completedTasks.map((ct) =>
-      this.todoService.deleteTodo(ct.id, true)
-    );
-    forkJoin(deleteObservableArray$).subscribe({
+  /**
+   * Handles deleting all completed todo items.
+   */
+  handleClearCompleted(): void {
+    this.todoService.deleteCompletedTodos().subscribe({
       next: () => this.todoService.fetchTodos(),
       error: (err) => console.error('Error while deleting tasks', err),
     });
-  }
-
-  getUncompletedTasks(todos: ITodo[]): ITodo[] {
-    return todos.filter((t) => !t.completed);
   }
 
   ngOnDestroy(): void {
