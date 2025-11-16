@@ -12,12 +12,10 @@ import { FooterInfoComponent } from './components/footer-info/footer-info.compon
 import { HeaderComponent } from './components/header/header.component';
 import { TodoItemComponent } from './components/todo-item/todo-item.component';
 import { TodoListComponent } from './components/todo-list/todo-list.component';
-import { TodosContainerComponent } from './components/todos-container/todos-container.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TodosContainerComponent,
     CurrentDateComponent,
     HeaderComponent,
     AddTodoComponent,

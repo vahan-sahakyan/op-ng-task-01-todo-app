@@ -1,0 +1,15 @@
+<ul>
+  <app-todo-item
+    *ngFor="let todo of todos; trackBy: trackByFn"
+    (toggleCompleted)="handleToggleCompleted(todo)"
+    (editOrSaveTodo)="handleEditOrSaveTodo(todo, $event.title, $event.isDirty)"
+    (selectEditingId)="handleSelectEditingId($event)"
+    (deleteOrCancelTodo)="handleDeleteOrCancelTodo(todo)"
+    [todo]="todo"
+    [editingId]="editingId"
+  ></app-todo-item>
+
+  <li *ngIf="!todos.length" class="text-center text-gray-400 dark:text-gray-300 font-bold p-3 select-none">
+    No Tasks to Display
+  </li>
+</ul>
